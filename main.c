@@ -5,7 +5,7 @@ int main(int argc, char **argv)
     FILE *file;
     char *line = NULL, *opcode, *arg;
     size_t len = 0;
-    ssize_t read;
+    int read;
     unsigned int line_number = 0;
     stack_t *stack = NULL;
     instruction_t instructions[] = {
@@ -13,6 +13,7 @@ int main(int argc, char **argv)
         {"pall", pall},
         {NULL, NULL}
     };
+    int i;
 
     if (argc != 2)
     {
@@ -27,7 +28,7 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    while ((read = getline(&line, &len, file)) != -1)
+    while ((read = custom_getline(&line, &len, file)) != -1)
     {
         line_number++;
         opcode = strtok(line, " \n\t");
@@ -36,13 +37,19 @@ int main(int argc, char **argv)
 
         arg = strtok(NULL, " \n\t");
 
-        for (int i = 0; instructions[i].opcode; i++)
+        for (i = 0; instructions[i].opcode; i++)
         {
             if (strcmp(opcode, instructions[i].opcode) == 0)
             {
                 instructions[i].f(&stack, line_number, arg);
                 break;
             }
+        }
+
+        if (instructions[i].opcode == NULL)
+        {
+            fprintf(stderr, "L%u: unknown instruction %s\n", line_number, opcode);
+            exit(EXIT_FAILURE);
         }
     }
 
