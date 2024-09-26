@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Data structure definitions remain the same */
-
 typedef struct stack_s
 {
     int n;
@@ -23,6 +21,7 @@ typedef struct instruction_s
 void push(stack_t **stack, unsigned int line_number, char *arg);
 void pall(stack_t **stack, unsigned int line_number, char *arg);
 void pint(stack_t **stack, unsigned int line_number, char *arg);
+void pop(stack_t **stack, unsigned int line_number, char *arg);
 
 int custom_getline(char **lineptr, size_t *n, FILE *stream);
 
