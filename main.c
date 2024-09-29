@@ -1,20 +1,25 @@
 #include "monty.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int main(int argc, char **argv)
+instruction_t instructions[] = {
+    {"push", push},
+    {"pall", pall},
+    {"pint", pint},
+    {"pop", pop},
+    {"swap", swap},
+    {NULL, NULL}
+};
+
+int main(int argc, char *argv[])
 {
-    FILE *file;
-    char *line = NULL, *opcode, *arg;
+    char *line = NULL;
     size_t len = 0;
     int read;
     unsigned int line_number = 0;
     stack_t *stack = NULL;
-    instruction_t instructions[] = {
-        {"push", push},
-        {"pall", pall},
-        {"pint", pint},
-        {"pop", pop},
-        {NULL, NULL}
-    };
+    FILE *file;
     int i;
 
     if (argc != 2)
@@ -24,7 +29,7 @@ int main(int argc, char **argv)
     }
 
     file = fopen(argv[1], "r");
-    if (!file)
+    if (file == NULL)
     {
         fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
         exit(EXIT_FAILURE);
@@ -32,14 +37,16 @@ int main(int argc, char **argv)
 
     while ((read = custom_getline(&line, &len, file)) != -1)
     {
+        char *opcode, *arg;
         line_number++;
         opcode = strtok(line, " \n\t");
+
         if (opcode == NULL || opcode[0] == '#')
             continue;
 
         arg = strtok(NULL, " \n\t");
 
-        for (i = 0; instructions[i].opcode; i++)
+        for (i = 0; instructions[i].opcode != NULL; i++)
         {
             if (strcmp(opcode, instructions[i].opcode) == 0)
             {
@@ -50,12 +57,16 @@ int main(int argc, char **argv)
 
         if (instructions[i].opcode == NULL)
         {
-            fprintf(stderr, "L%u: unknown instruction %s\n", line_number, opcode);
+            fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
+            free(line);
+            fclose(file);
+            free_stack(stack);
             exit(EXIT_FAILURE);
         }
     }
 
     free(line);
     fclose(file);
+    free_stack(stack);
     return (0);
 }
