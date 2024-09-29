@@ -37,5 +37,6 @@ void swap(stack_t **stack, unsigned int line_number, char *arg);
 void free_stack(stack_t *stack);
 int custom_getline(char **lineptr, size_t *n, FILE *stream);
 void add(stack_t **stack, unsigned int line_number, char* arg);
+void sub(stack_t **stack, unsigned int line_number, char *arg);
 
 #endif /* MONTY_H */
