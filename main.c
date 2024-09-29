@@ -11,6 +11,7 @@ instruction_t instructions[] = {
     {"swap", swap},
     {"add", add},
     {"sub", sub},
+    {"div", _div},
     {NULL, NULL}
 };
 
